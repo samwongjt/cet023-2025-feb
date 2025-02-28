@@ -1,6 +1,8 @@
 from flask import Flask
 from flask import request,render_template
 import google.generativeai as genai
+import os
+import textblob
 
 api ="AIzaSyCOIVd1U9yDc_6niQ3Hd1ij2a1jyk1NX3w"
 #api = os.getenv("makersuite")
@@ -24,6 +26,15 @@ def gemini():
     r = model.generate_content(q)
     return(render_template("gemini.html",r=r.candidates[0].content.parts[0].text))
 
+@app.route("/sentiment",methods=["GET","POST"])
+def sentiment():
+    return(render_template("sentiment.html"))
+
+@app.route("/textblob_result",methods=["GET","POST"])
+def textblob_result():
+    q=request.form.get("q")
+    r= textblob.TextBlob(q).sentiment
+    return(render_template("textblob_result.html",r=r))
 
 if __name__ == "__main__":
     app.run(port = 1234)
